@@ -6,7 +6,8 @@
 
 > 🌐 **English version below · 英文版见文末**
 
-![logo](logo.png)
+![show](show.png)
+![link](show-connect.png)
 
 ---
 
