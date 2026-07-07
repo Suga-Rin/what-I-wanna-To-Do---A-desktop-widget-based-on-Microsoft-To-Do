@@ -1,0 +1,19 @@
+# Personal / runtime files — NEVER commit these
+token.dat
+auth-code.json
+tasks.json
+
+# per-user widget state (generated at runtime)
+settings.txt
+settings.json
+pending.txt
+tips.txt
+panel.txt
+scroll.txt
+
+# logs / shortcuts / scratch
+*.log
+*.lnk
+*.tmp
+diag*.ps1
+test-*.ps1
