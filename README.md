@@ -6,8 +6,7 @@
 
 > 🌐 **English version below · 英文版见文末**
 
-![show](show.png)
-![link](show-connect.png)
+![logo](logo.png)
 
 ---
 
@@ -43,7 +42,7 @@
    ```powershell
    powershell -ExecutionPolicy Bypass -File .\setup.ps1
    ```
-   它会：**①** 检测/自动安装 Rainmeter → **②** 设开机自启 → **③** 弹设备码登录（ctrl+点击网址后，复制验证码登录并授权「Microsoft Graph Command Line Tools」）→ **④** 生成并激活桌面挂件 → **⑤** 建桌面「To Do Widget」快捷方式。
+   它会：**①** 检测/自动安装 Rainmeter → **②** 设开机自启 → **③** 弹设备码登录（照着网址+验证码登录并授权「Microsoft Graph Command Line Tools」）→ **④** 生成并激活桌面挂件 → **⑤** 建桌面「To Do Widget」快捷方式。
 3. 完成，挂件就在桌面上了，开机自动加载。
 
 ## 🕹 使用

@@ -63,9 +63,9 @@ else {
     $b=[Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec);$rt=[Runtime.InteropServices.Marshal]::PtrToStringAuto($b);[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($b)
     $tok=Invoke-RestMethod -Method Post -TimeoutSec 25 -Uri 'https://login.microsoftonline.com/common/oauth2/v2.0/token' -Body @{grant_type='refresh_token';client_id=$clientId;refresh_token=$rt;scope=$scope}
     if($tok.refresh_token){$tok.refresh_token|ConvertTo-SecureString -AsPlainText -Force|ConvertFrom-SecureString|Out-File $tokFile -Encoding ascii}
-    $hdr=@{Authorization='Bearer '+$tok.access_token;'Content-Type'='application/json'}
+    $hdr=@{Authorization='Bearer '+$tok.access_token;'Content-Type'='application/json; charset=utf-8'}
     if($act -eq 'complete' -and $a1 -and $a2){
-      Invoke-RestMethod -Method Patch -TimeoutSec 25 -Uri "https://graph.microsoft.com/v1.0/me/todo/lists/$a1/tasks/$a2" -Headers $hdr -Body (@{status='completed'}|ConvertTo-Json)|Out-Null
+      Invoke-RestMethod -Method Patch -TimeoutSec 25 -Uri "https://graph.microsoft.com/v1.0/me/todo/lists/$a1/tasks/$a2" -Headers $hdr -Body ([System.Text.UTF8Encoding]::new($false).GetBytes((@{status='completed'}|ConvertTo-Json)))|Out-Null
       $needFetch=$true
     }
     elseif($act -eq 'add' -and $a1){
@@ -75,7 +75,7 @@ else {
         $def=($lists|Where-Object{$_.wellknownListName -eq 'defaultList'}|Select-Object -First 1); if(-not $def){$def=$lists|Select-Object -First 1}
         $body=@{title=$text; importance=$(if($p.Imp){'high'}else{'normal'})}
         if($p.Due){ $body.dueDateTime=@{dateTime=([datetime]$p.Due).ToString('yyyy-MM-ddT00:00:00.0000000'); timeZone=(Get-TimeZone).Id} }
-        Invoke-RestMethod -Method Post -TimeoutSec 25 -Uri "https://graph.microsoft.com/v1.0/me/todo/lists/$($def.id)/tasks" -Headers $hdr -Body ($body|ConvertTo-Json -Depth 5)|Out-Null
+        Invoke-RestMethod -Method Post -TimeoutSec 25 -Uri "https://graph.microsoft.com/v1.0/me/todo/lists/$($def.id)/tasks" -Headers $hdr -Body ([System.Text.UTF8Encoding]::new($false).GetBytes(($body|ConvertTo-Json -Depth 5)))|Out-Null
         SavePend $false '' ''
       }
       $needFetch=$true
