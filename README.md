@@ -86,6 +86,7 @@
 
 - **改 `.ps1` 时**：里面有中文/emoji，**必须存成 UTF-8 *带 BOM***，否则 PowerShell 5.1 会按本地代码页解码、解析失败、脚本静默不运行。
 - **皮肤文件是 UTF-16 LE**：`todo-render.ps1` / `todo-cal.ps1` 写 `.ini` 用 UTF-16 —— Rainmeter 对 UTF-8 支持不稳，中文会乱码。
+- **Rainmeter 安装路径检测**：脚本会自动检测 Rainmeter 安装位置（64 位：`C:\Program Files\Rainmeter\`，32 位：`C:\Program Files (x86)\Rainmeter\`）。如果你安装在自定义位置，需要手动修改以下文件中的 `$rmExe` 变量：`setup.ps1`、`todo-action.ps1`、`todo-render.ps1`、`todo-cal.ps1`。
 - **任务不同步 / 卡"正在同步"（用了代理）**：某些本地代理会破坏 To Do 的长连接。把这些加到代理**绕过列表**：
   `*.microsoft.com;*.office.com;*.office365.com;*.live.com;*.outlook.com;*.microsoftonline.com`
 - **挂件没出现**：确认 Rainmeter 在运行；重跑 `setup.ps1`；或在 Rainmeter 管理器里激活 `ToDo\ToDo.ini`。默认皮肤路径是 `文档\Rainmeter\Skins`。
@@ -157,6 +158,7 @@ Microsoft's first-party public client **"Microsoft Graph Command Line Tools"** (
 
 - **Editing `.ps1`**: they contain CJK/emoji, so save as **UTF-8 *with BOM*** (PowerShell 5.1 otherwise mis-decodes them and the script silently won't run).
 - **Skin `.ini` files are UTF-16 LE** (Rainmeter's Unicode; UTF-8 garbles CJK).
+- **Rainmeter path detection**: Scripts auto-detect Rainmeter installation (64-bit: `C:\Program Files\Rainmeter\`, 32-bit: `C:\Program Files (x86)\Rainmeter\`). If installed to a custom location, manually update the `$rmExe` variable in: `setup.ps1`, `todo-action.ps1`, `todo-render.ps1`, `todo-cal.ps1`.
 - **Sync stuck behind a proxy?** Add to the proxy **bypass** list: `*.microsoft.com;*.office.com;*.office365.com;*.live.com;*.outlook.com;*.microsoftonline.com`.
 - **Widget missing?** Ensure Rainmeter is running; re-run `setup.ps1`, or activate `ToDo\ToDo.ini` from Rainmeter's Manage dialog (default skin path `Documents\Rainmeter\Skins`).
 
