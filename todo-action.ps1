@@ -9,6 +9,7 @@ $scope='https://graph.microsoft.com/Tasks.ReadWrite offline_access'
 $pend=Join-Path $dir 'pending.txt'
 $sf=Join-Path $dir 'settings.txt'
 $rmExe='C:\Program Files\Rainmeter\Rainmeter.exe'
+if(-not (Test-Path $rmExe)){ $rmExe='C:\Program Files (x86)\Rainmeter\Rainmeter.exe' }
 function LoadPend { if(Test-Path $pend){ $l=@(Get-Content $pend -Encoding UTF8); @{Imp=($l.Count -ge 1 -and $l[0] -eq '1'); Due=$(if($l.Count -ge 2){$l[1]}else{''}); Label=$(if($l.Count -ge 3){$l[2]}else{''})} } else { @{Imp=$false;Due='';Label=''} } }
 function SavePend($imp,$due,$label){ (@(([int][bool]$imp),$due,$label) -join "`n") | Out-File $pend -Encoding UTF8 }
 function LoadSet { $a=236;$w=300;$v=10;$k=0;$fo=100; if(Test-Path $sf){ $l=@(Get-Content $sf -Encoding UTF8); if($l.Count -ge 1 -and $l[0]){$a=[int]$l[0]}; if($l.Count -ge 2 -and $l[1]){$w=[int]$l[1]}; if($l.Count -ge 3 -and $l[2]){$v=[int]$l[2]}; if($l.Count -ge 4 -and $l[3]){$k=[int]$l[3]}; if($l.Count -ge 5 -and $l[4]){$fo=[int]$l[4]} }; @{Alpha=$a;Width=$w;Vis=$v;Locked=$k;Font=$fo} }
@@ -63,9 +64,9 @@ else {
     $b=[Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec);$rt=[Runtime.InteropServices.Marshal]::PtrToStringAuto($b);[Runtime.InteropServices.Marshal]::ZeroFreeBSTR($b)
     $tok=Invoke-RestMethod -Method Post -TimeoutSec 25 -Uri 'https://login.microsoftonline.com/common/oauth2/v2.0/token' -Body @{grant_type='refresh_token';client_id=$clientId;refresh_token=$rt;scope=$scope}
     if($tok.refresh_token){$tok.refresh_token|ConvertTo-SecureString -AsPlainText -Force|ConvertFrom-SecureString|Out-File $tokFile -Encoding ascii}
-    $hdr=@{Authorization='Bearer '+$tok.access_token;'Content-Type'='application/json'}
+    $hdr=@{Authorization='Bearer '+$tok.access_token;'Content-Type'='application/json; charset=utf-8'}
     if($act -eq 'complete' -and $a1 -and $a2){
-      Invoke-RestMethod -Method Patch -TimeoutSec 25 -Uri "https://graph.microsoft.com/v1.0/me/todo/lists/$a1/tasks/$a2" -Headers $hdr -Body (@{status='completed'}|ConvertTo-Json)|Out-Null
+      Invoke-RestMethod -Method Patch -TimeoutSec 25 -Uri "https://graph.microsoft.com/v1.0/me/todo/lists/$a1/tasks/$a2" -Headers $hdr -Body ([System.Text.UTF8Encoding]::new($false).GetBytes((@{status='completed'}|ConvertTo-Json)))|Out-Null
       $needFetch=$true
     }
     elseif($act -eq 'add' -and $a1){
@@ -75,7 +76,7 @@ else {
         $def=($lists|Where-Object{$_.wellknownListName -eq 'defaultList'}|Select-Object -First 1); if(-not $def){$def=$lists|Select-Object -First 1}
         $body=@{title=$text; importance=$(if($p.Imp){'high'}else{'normal'})}
         if($p.Due){ $body.dueDateTime=@{dateTime=([datetime]$p.Due).ToString('yyyy-MM-ddT00:00:00.0000000'); timeZone=(Get-TimeZone).Id} }
-        Invoke-RestMethod -Method Post -TimeoutSec 25 -Uri "https://graph.microsoft.com/v1.0/me/todo/lists/$($def.id)/tasks" -Headers $hdr -Body ($body|ConvertTo-Json -Depth 5)|Out-Null
+        Invoke-RestMethod -Method Post -TimeoutSec 25 -Uri "https://graph.microsoft.com/v1.0/me/todo/lists/$($def.id)/tasks" -Headers $hdr -Body ([System.Text.UTF8Encoding]::new($false).GetBytes(($body|ConvertTo-Json -Depth 5)))|Out-Null
         SavePend $false '' ''
       }
       $needFetch=$true

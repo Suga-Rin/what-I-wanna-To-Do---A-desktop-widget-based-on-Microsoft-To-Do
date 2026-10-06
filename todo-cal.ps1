@@ -3,6 +3,7 @@
 $ErrorActionPreference='Stop'
 $dir=$PSScriptRoot; if(-not $dir){$dir=Split-Path -Parent $MyInvocation.MyCommand.Definition}
 $rmExe='C:\Program Files\Rainmeter\Rainmeter.exe'
+if(-not (Test-Path $rmExe)){ $rmExe='C:\Program Files (x86)\Rainmeter\Rainmeter.exe' }
 $rmIni=Join-Path $env:APPDATA 'Rainmeter\Rainmeter.ini'
 $skinDir=Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Rainmeter\Skins\ToDoCal'
 if(-not(Test-Path $skinDir)){ New-Item -ItemType Directory -Path $skinDir -Force|Out-Null }

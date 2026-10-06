@@ -3,6 +3,7 @@ $ErrorActionPreference='Stop'
 $dir=$PSScriptRoot; if(-not $dir){$dir=Split-Path -Parent $MyInvocation.MyCommand.Definition}
 $skinDir=Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Rainmeter\Skins\ToDo'
 $rmExe='C:\Program Files\Rainmeter\Rainmeter.exe'
+if(-not (Test-Path $rmExe)){ $rmExe='C:\Program Files (x86)\Rainmeter\Rainmeter.exe' }
 if(-not (Test-Path $skinDir)){ New-Item -ItemType Directory -Path $skinDir -Force | Out-Null }
 
 # --- settings: alpha, width, vis rows, locked, fontsz% ---
